@@ -23,7 +23,7 @@ public class RegistrationController {
     @PostMapping("/registration")
     public String registeredUser(User user, Model model) {
 
-        if(!userService.saveUser(user)) {
+        if(!userService.addUser(user)) {
             model.addAttribute("message", "User already exists!");
             return "/registration";
         }

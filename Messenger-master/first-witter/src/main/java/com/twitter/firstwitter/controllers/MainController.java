@@ -24,9 +24,6 @@ public class MainController {
     @Autowired
     private MessageService messageService;
 
-    @Value("${upload.path}")
-    private String uploadPath;
-
     @GetMapping("/")
     public String main(Model model) {
         return "main";
@@ -35,6 +32,7 @@ public class MainController {
     @GetMapping("/main")
     public String listMessage(@RequestParam(required = false, defaultValue = "") String tag, Model model) {
         Iterable<Message> messages;
+
         if (tag != null && !tag.isEmpty()) {
             messages = messageService.findByTag(tag);
         } else {
@@ -55,22 +53,7 @@ public class MainController {
                        @RequestParam String tag,
                        @RequestParam("file") MultipartFile file,
                        Model model) throws IOException {
-        Message message = new Message(text, tag, user);
-
-        if(file != null && !file.getOriginalFilename().isEmpty()) {
-            File dir = new File(uploadPath);
-            if(!dir.exists()){
-                dir.mkdir();
-            }
-
-            String uuidFileName = UUID.randomUUID().toString();
-            String resultFileName = uuidFileName + "." + file.getOriginalFilename();
-            file.transferTo(new File(uploadPath + "/" + resultFileName));
-            message.setFilename(resultFileName);
-        }
-
-        messageService.save(message);
-
+        messageService.save(new Message(text, tag, user), file);
         return "redirect:/main";
     }
 }

@@ -15,7 +15,10 @@
                 <td>${u.username}</td>
                 <td>${u.email}</td>
                 <td>
-                    <#list u.roles as role> ${role} <sep>,</sep></#list>
+                    <#list u.roles as role>
+                        ${role}
+                        <sep>,</sep>
+                    </#list>
                 </td>
                 <td><a href="/users/${u.id}">Edit</a></td>
             </tr>
