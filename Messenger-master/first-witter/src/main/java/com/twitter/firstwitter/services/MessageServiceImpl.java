@@ -1,13 +1,17 @@
 package com.twitter.firstwitter.services;
 
+import com.twitter.firstwitter.controllers.ControllerUtils;
 import com.twitter.firstwitter.entities.Message;
 import com.twitter.firstwitter.repositories.MessageRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
+
 import java.util.UUID;
 
 @Service
@@ -28,25 +32,33 @@ public class MessageServiceImpl implements MessageService{
     }
 
     @Override
-    public Message save(Message message, MultipartFile file)  {
+    public Message save(Message message, MultipartFile file, BindingResult bindingResult, Model model)  {
 
-        if(file != null && !file.getOriginalFilename().isEmpty()) {
-            File dir = new File(uploadPath);
-            if(!dir.exists()){
-                dir.mkdir();
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("message", message);
+            model.mergeAttributes(ControllerUtils.getErrors(bindingResult));
+        } else {
+            if (file != null && !file.getOriginalFilename().isEmpty()) {
+                File dir = new File(uploadPath);
+                if (!dir.exists()) {
+                    dir.mkdir();
+                }
+
+                String uuidFileName = UUID.randomUUID().toString();
+                String resultFileName = uuidFileName + "." + file.getOriginalFilename();
+                try {
+                    file.transferTo(new File(uploadPath + "/" + resultFileName));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                message.setFilename(resultFileName);
             }
 
-            String uuidFileName = UUID.randomUUID().toString();
-            String resultFileName = uuidFileName + "." + file.getOriginalFilename();
-            try {
-                file.transferTo(new File(uploadPath + "/" + resultFileName));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            message.setFilename(resultFileName);
+            model.addAttribute("message", null);
+            return messageRepo.save(message);
         }
 
-        return messageRepo.save(message);
+        return null;
     }
 
     @Override

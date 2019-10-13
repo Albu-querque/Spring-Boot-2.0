@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "messages")
@@ -19,7 +21,11 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.AUTO)
     long id;
 
+    @NotBlank(message = "Required field. Please fill the message.")
+    @Length(max = 2048, message = "Message too long. Max size message - 2KB.")
     String text;
+
+    @Length(max=255, message = "Message too long. Max size message - 255 symbols.")
     String tag;
 
     @ManyToOne(fetch = FetchType.EAGER)

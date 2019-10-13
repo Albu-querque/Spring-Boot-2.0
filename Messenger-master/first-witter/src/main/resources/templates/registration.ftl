@@ -3,6 +3,6 @@
 <@c.page>
     <div><h1>Registration new user</h1></div>
     ${message?ifExists}
-    <@l.login "/registration" false "To register"/>
+    <@l.login "/registration" true "To register"/>
     <div><a href="/login">Back</a></div>
 </@c.page>

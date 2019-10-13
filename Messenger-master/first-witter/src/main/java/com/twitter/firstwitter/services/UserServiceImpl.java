@@ -17,6 +17,7 @@ import static java.util.stream.Collectors.toSet;
 
 @Service
 public class UserServiceImpl implements UserService {
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -128,12 +129,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
+
         return userRepo.findByUsername(username);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepo.findByUsername(username);
+        User user = userRepo.findByUsername(username);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return user;
     }
 
     @Override

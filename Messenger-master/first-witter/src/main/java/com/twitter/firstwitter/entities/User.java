@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Set;
 
@@ -22,18 +23,20 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     long id;
 
-    @Column(nullable = false, name = "username", unique = true)
+    @NotBlank(message = "Username cannot be empty!")
     String username;
 
-    @Email
+    @Column(nullable = false, name = "password")
+    @NotBlank(message = "Password cannot be empty!")
+    String password;
+
+    @Email(message = "Email isn't correct.")
+    @NotBlank(message = "Email cannot be empty!")
     @Column(nullable = false, name = "email", unique = true)
     String email;
 
     @Column(name = "activationCode")
     String activationCode;
-
-    @Column(nullable = false, name = "password")
-    String password;
 
     @Column(nullable = false, name = "active")
     boolean active;
