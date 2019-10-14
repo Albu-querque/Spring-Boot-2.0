@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -44,18 +45,16 @@ public class MainController {
 
 
 
-    @PostMapping("/main")
+    @PostMapping("/saveMessage")
     public String save(@AuthenticationPrincipal User user,
                        @RequestParam("file") MultipartFile file,
                        @Valid Message message,
                        BindingResult bindingResult,
+                       RedirectAttributes redirectAttributes,
                        Model model) {
         message.setAuthor(user);
-        messageService.save(message, file, bindingResult, model);
+        messageService.save(message, file, bindingResult, model, redirectAttributes);
 
-        Iterable<Message> messages = messageService.findAll();
-        model.addAttribute("messages", messages);
-
-        return "listMessages";
+        return "redirect:/main";
     }
 }

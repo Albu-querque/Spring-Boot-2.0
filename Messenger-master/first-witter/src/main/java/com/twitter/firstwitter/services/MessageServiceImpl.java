@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.util.List;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -32,11 +34,11 @@ public class MessageServiceImpl implements MessageService{
     }
 
     @Override
-    public Message save(Message message, MultipartFile file, BindingResult bindingResult, Model model)  {
+    public Message save(Message message, MultipartFile file, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes)  {
 
         if(bindingResult.hasErrors()) {
-            model.addAttribute("message", message);
-            model.mergeAttributes(ControllerUtils.getErrors(bindingResult));
+            redirectAttributes.addFlashAttribute("message", message);
+            ControllerUtils.getErrors(bindingResult).forEach(redirectAttributes::addFlashAttribute);
         } else {
             if (file != null && !file.getOriginalFilename().isEmpty()) {
                 File dir = new File(uploadPath);

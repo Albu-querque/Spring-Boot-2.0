@@ -7,7 +7,7 @@
     </a>
     <div class="form-row collapse <#if message??>show</#if>" id="collapse">
         <div class="form-group">
-            <form method="post" action="/main" enctype="multipart/form-data" class="my-2">
+            <form method="post" action="/saveMessage" enctype="multipart/form-data" class="my-2">
                 <div class="form-group">
                     <input type="text"
                            name="text"
